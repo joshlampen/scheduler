@@ -14,6 +14,18 @@ export default function useApplicationData() {
   const setDay = day => setState({ ...state, day });
 
   const bookInterview = (id, interview) => {
+    const newDay = state.days.filter(day => day.appointments.includes(id))[0];
+
+    newDay.spots--;
+
+    const newDays = state.days
+
+    for (let i = 0; i < state.days.length; i++) {
+      if (state.days[i].id === newDay.id) {
+        newDays.splice(i, 1, newDay)
+      }
+    }
+
     const appointment = {
       ...state.appointments[id],
       interview: { ...interview },
@@ -25,10 +37,22 @@ export default function useApplicationData() {
     };
 
     return axios.put(`/api/appointments/${id}`, { interview })
-      .then(() => setState({ ...state, appointments }))
+      .then(() => setState({ ...state, appointments, days: newDays }))
   }
 
   const cancelInterview = (id) => {
+    const newDay = state.days.filter(day => day.appointments.includes(id))[0];
+
+    newDay.spots++;
+
+    const newDays = state.days
+
+    for (let i = 0; i < state.days.length; i++) {
+      if (state.days[i].id === newDay.id) {
+        newDays.splice(i, 1, newDay)
+      }
+    }
+
     const appointment = {
       ...state.appointments[id],
       interview: null,
@@ -40,7 +64,7 @@ export default function useApplicationData() {
     }
 
     return axios.delete(`/api/appointments/${id}`)
-      .then(() => setState({ ...state, appointments }));
+      .then(() => setState({ ...state, appointments, days: newDays }));
   }
 
   useEffect(() => {
@@ -53,9 +77,10 @@ export default function useApplicationData() {
       const appointments = all[1].data
       const interviewers = all[2].data
       const appointmentsForDay = getAppointmentsForDay(days, appointments, state.day);
+      const spotsForDay = appointmentsForDay.filter(appointment => !appointment.interview).length;
 
-      setState(prev => ({ ...state, days, appointments, interviewers, appointmentsForDay }));
-    });
+      setState(prev => ({ ...state, days, appointments, interviewers, appointmentsForDay, spotsForDay }));
+    })
   }, []);
 
   useEffect(() => {
