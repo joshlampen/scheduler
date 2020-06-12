@@ -25,7 +25,7 @@ export default function Appointment(props) {
     props.interview ? SHOW : EMPTY
   )
 
-  const save = (name, interviewer) => {
+  const save = (name, interviewer, type) => {
     const interview = {
       student: name,
       interviewer
@@ -33,7 +33,7 @@ export default function Appointment(props) {
 
     transition(SAVING);
 
-    props.bookInterview(props.id, interview)
+    props.bookInterview(props.id, interview, type)
       .then(() => transition(SHOW))
       .catch(() => transition(ERROR_SAVE, true));
   }
@@ -72,6 +72,7 @@ export default function Appointment(props) {
       )}
       {mode === CREATE && (
         <Form
+          type={CREATE}
           interviewers={props.interviewers}
           onSave={save}
           onCancel={back}
@@ -79,6 +80,7 @@ export default function Appointment(props) {
       )}
       {mode === EDIT && (
         <Form
+          type={EDIT}
           name={props.interview.student}
           interviewer={props.interview.interviewer.id}
           interviewers={props.interviewers}
