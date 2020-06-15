@@ -14,7 +14,39 @@ export default function useApplicationData() {
       case SET_APPLICATION_DATA:
         return { ...state, ...action }
       case SET_INTERVIEW:
-        return { ...state, ...action }
+        const newDay = state.days.filter(day => day.appointments.includes(action.id))[0];
+
+        if (!(state.appointments[action.id].interview && action.interview)) {
+          if (action.interview) {
+            console.log("Appointment contains an interview... decrementing")
+            newDay.spots--
+          } else {
+            console.log("Appointment does not contain an interview... incrementing")
+            newDay.spots++
+          }
+        }
+
+        const days = state.days
+
+        days.map(day => {
+          if (day.id === newDay.id) {
+            day = newDay
+          }
+        })
+
+        const interview = action.interview ? { ...action.interview } : null;
+
+        const appointment = {
+          ...state.appointments[action.id],
+          interview,
+        };
+
+        const appointments = {
+          ...state.appointments,
+          [action.id]: appointment,
+        };
+
+        return { ...state, appointments, days }
       default:
         throw new Error(
           `Tried to reduce with unsupported action type: ${action.type}`
@@ -30,60 +62,14 @@ export default function useApplicationData() {
     appointmentsForDay: [],
   });
 
-  const setDay = day => dispatch({ type: SET_DAY, day});
+  const setDay = day => dispatch({ type: SET_DAY, day });
 
   const bookInterview = (id, interview, type) => {
-    const newDay = state.days.filter(day => day.appointments.includes(id))[0];
-
-    if (type === "CREATE") newDay.spots--;
-
-    const newDays = state.days
-
-    newDays.map(day => {
-      if (day.id === newDay.id) {
-        day = newDay
-      }
-    })
-
-    const appointment = {
-      ...state.appointments[id],
-      interview: { ...interview },
-    };
-
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment,
-    };
-
     return axios.put(`/api/appointments/${id}`, { interview })
-      .then(() => dispatch({ type: SET_INTERVIEW, appointments, days: newDays }))
   }
 
   const cancelInterview = (id) => {
-    const newDay = state.days.filter(day => day.appointments.includes(id))[0];
-
-    newDay.spots++;
-
-    const newDays = state.days
-
-    newDays.map(day => {
-      if (day.id === newDay.id) {
-        day = newDay
-      }
-    })
-
-    const appointment = {
-      ...state.appointments[id],
-      interview: null,
-    };
-
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment,
-    }
-
     return axios.delete(`/api/appointments/${id}`)
-      .then(() => dispatch({ type: SET_INTERVIEW, appointments, days: newDays }));
   }
 
   useEffect(() => {
@@ -104,8 +90,21 @@ export default function useApplicationData() {
   useEffect(() => {
     const appointmentsForDay = getAppointmentsForDay(state.days, state.appointments, state.day);
 
-    dispatch({ type: SET_APPLICATION_DATA, days: state.days, appointments: state.appointments, interviewers: state.interviewers, appointmentsForDay: state.appointmentsForDay });
+    dispatch({ type: SET_APPLICATION_DATA, ...state, appointmentsForDay });
   }, [state.day]);
+
+  useEffect(() => {
+    const webSocket = new WebSocket("ws://localhost:8001");
+    console.log("Incoming websocket message")
+
+    webSocket.onmessage = event => {
+      const appointment = JSON.parse(event.data)
+
+      if (appointment.type === "SET_INTERVIEW") {
+        dispatch(appointment);
+      }
+    }
+  }, [dispatch]);
 
   return { state, setDay, bookInterview, cancelInterview };
 }

@@ -1,12 +1,8 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React from "react";
 
-import Button from "components/Button";
-import DayListItem from "components/DayListItem";
 import DayList from "components/DayList";
 import Appointment from "components/Appointment";
 import { getAppointmentsForDay, getInterviewersForDay, getInterview } from "helpers/selectors";
-import useVisualMode from "hooks/useVisualMode";
 import useApplicationData from "hooks/useApplicationData";
 
 import "components/Application.scss";

@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import Header from "components/Appointment/Header";
+import React, { useEffect } from "react";
 import Show from "components/Appointment/Show";
 import Empty from "components/Appointment/Empty";
 import Form from "components/Appointment/Form";
@@ -24,6 +23,15 @@ export default function Appointment(props) {
   const { mode, transition, back } = useVisualMode(
     props.interview ? SHOW : EMPTY
   )
+
+  useEffect(() => {
+    if (props.interview && mode === EMPTY) {
+      transition(SHOW);
+    }
+    if (props.interview === null && mode === SHOW) {
+      transition(EMPTY);
+    }
+  }, [props.interview, transition, mode]);
 
   const save = (name, interviewer, type) => {
     const interview = {
@@ -62,7 +70,7 @@ export default function Appointment(props) {
       {mode === DELETING && <Status message="Deleting" />}
       {mode === ERROR_SAVE && <Error message="Could not save appointment" onClose={back} />}
       {mode === ERROR_DELETE && <Error message="Could not delete appointment" onClose={back} />}
-      {mode === SHOW && (
+      {mode === SHOW && props.interview && (
         <Show
           student={props.interview.student} 
           interviewer={props.interview.interviewer.name}
