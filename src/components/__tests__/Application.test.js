@@ -84,14 +84,14 @@ describe("Application", () => {
     fireEvent.click(getByAltText(appointment, "Edit"));
 
     fireEvent.change(getByPlaceholderText(appointment, /enter student name/i), {
-      target: { value: "Josh Lampen" }
+      target: { value: "Lydia Miller-Jones" }
     });
 
     fireEvent.click(getByText(appointment, "Save"));
 
     expect(getByText(appointment, "Saving")).toBeInTheDocument();
 
-    // await waitForElement(() => getByText(appointment, "Josh Lampen"));
+    // await waitForElement(() => getByText(appointment, "Lydia Miller-Jones"));
     // use of WebSockets means the above line will fail
 
     const day = getAllByTestId(container, "day").find(day => queryByText(day, "Monday"));
