@@ -2,58 +2,56 @@ import React, { useReducer, useEffect } from "react";
 import axios from "axios";
 import { getAppointmentsForDay } from "helpers/selectors";
 
-export default function useApplicationData() {
-  const SET_DAY = "SET_DAY";
-  const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
-  const SET_INTERVIEW = "SET_INTERVIEW";
+const SET_DAY = "SET_DAY";
+const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
+const SET_INTERVIEW = "SET_INTERVIEW";
 
-  function reducer(state, action) {
-    switch (action.type) {
-      case SET_DAY:
-        return { ...state, ...action }
-      case SET_APPLICATION_DATA:
-        return { ...state, ...action }
-      case SET_INTERVIEW:
-        const newDay = state.days.filter(day => day.appointments.includes(action.id))[0];
+function reducer(state, action) {
+  switch (action.type) {
+    case SET_DAY:
+      return { ...state, ...action.payload }
+    case SET_APPLICATION_DATA:
+      return { ...state, ...action.payload }
+    case SET_INTERVIEW:
+      let newDay = state.days.filter(day => day.appointments.includes(action.id))[0];
 
-        if (!(state.appointments[action.id].interview && action.interview)) {
-          if (action.interview) {
-            console.log("Appointment contains an interview... decrementing")
-            newDay.spots--
-          } else {
-            console.log("Appointment does not contain an interview... incrementing")
-            newDay.spots++
-          }
+      if (!(state.appointments[action.id].interview && action.interview)) {
+        if (action.interview) {
+          newDay.spots--;
+        } else {
+          newDay.spots++;
         }
+      }
 
-        const days = state.days
+      const days = state.days;
 
-        days.map(day => {
-          if (day.id === newDay.id) {
-            day = newDay
-          }
-        })
+      days.map(day => {
+        if (day.id === newDay.id) {
+          day = newDay
+        }
+      });
 
-        const interview = action.interview ? { ...action.interview } : null;
+      const interview = action.interview ? { ...action.interview } : null;
 
-        const appointment = {
-          ...state.appointments[action.id],
-          interview,
-        };
+      const appointment = {
+        ...state.appointments[action.id],
+        interview,
+      };
 
-        const appointments = {
-          ...state.appointments,
-          [action.id]: appointment,
-        };
+      const appointments = {
+        ...state.appointments,
+        [action.id]: appointment,
+      };
 
-        return { ...state, appointments, days }
-      default:
-        throw new Error(
-          `Tried to reduce with unsupported action type: ${action.type}`
-        );
-    }
+      return { ...state, appointments, days }
+    default:
+      throw new Error(
+        `Tried to reduce with unsupported action type: ${action.type}`
+      );
   }
+}
 
+export default function useApplicationData() {
   const [state, dispatch] = useReducer(reducer, {
     day: "Monday",
     days: [],
@@ -62,7 +60,10 @@ export default function useApplicationData() {
     appointmentsForDay: [],
   });
 
-  const setDay = day => dispatch({ type: SET_DAY, day });
+  const setDay = day => dispatch({
+    type: SET_DAY,
+    payload: { day }
+  });
 
   const bookInterview = (id, interview, type) => {
     return axios.put(`/api/appointments/${id}`, { interview })
@@ -83,19 +84,29 @@ export default function useApplicationData() {
       const interviewers = all[2].data
       const appointmentsForDay = getAppointmentsForDay(days, appointments, state.day);
 
-      dispatch({ type: SET_APPLICATION_DATA, days, appointments, interviewers, appointmentsForDay });
+      dispatch({
+        type: SET_APPLICATION_DATA,
+        payload: {
+          days,
+          appointments,
+          interviewers,
+          appointmentsForDay
+        }
+      });
     })
   }, []);
 
   useEffect(() => {
     const appointmentsForDay = getAppointmentsForDay(state.days, state.appointments, state.day);
 
-    dispatch({ type: SET_APPLICATION_DATA, ...state, appointmentsForDay });
+    dispatch({
+      type: SET_APPLICATION_DATA,
+      payload: { appointmentsForDay }
+    });
   }, [state.day]);
 
   useEffect(() => {
-    const webSocket = new WebSocket("ws://localhost:8001");
-    console.log("Incoming websocket message")
+    const webSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
 
     webSocket.onmessage = event => {
       const appointment = JSON.parse(event.data)
