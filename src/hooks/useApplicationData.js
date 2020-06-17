@@ -17,7 +17,7 @@ export default function useApplicationData() {
     payload: { day }
   });
 
-  const bookInterview = (id, interview, type) => {
+  const bookInterview = (id, interview) => {
     return axios.put(`/api/appointments/${id}`, { interview })
   }
 
