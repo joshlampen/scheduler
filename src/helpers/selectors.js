@@ -32,7 +32,7 @@ export function getInterview(state, interview) {
   const student = interview.student;
   const id = interview.interviewer;
 
-  const interviewer = state.interviewers[id]
+  const interviewer = state.interviewers[id];
 
   return { student, interviewer };
 }

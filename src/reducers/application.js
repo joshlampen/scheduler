@@ -7,9 +7,9 @@ export { SET_DAY, SET_APPLICATION_DATA, SET_INTERVIEW }
 export default function reducer(state, action) {
   switch (action.type) {
     case SET_DAY:
-      return { ...state, ...action.payload }
+      return { ...state, ...action.payload };
     case SET_APPLICATION_DATA:
-      return { ...state, ...action.payload }
+      return { ...state, ...action.payload };
     case SET_INTERVIEW:
       let newDay = state.days.filter(day => day.appointments.includes(action.id))[0];
 
@@ -25,7 +25,7 @@ export default function reducer(state, action) {
 
       days.map(day => {
         if (day.id === newDay.id) {
-          day = newDay
+          day = newDay;
         }
       });
 
@@ -33,15 +33,15 @@ export default function reducer(state, action) {
 
       const appointment = {
         ...state.appointments[action.id],
-        interview,
+        interview
       };
 
       const appointments = {
         ...state.appointments,
-        [action.id]: appointment,
+        [action.id]: appointment
       };
 
-      return { ...state, appointments, days }
+      return { ...state, appointments, days };
     default:
       throw new Error(
         `Tried to reduce with unsupported action type: ${action.type}`

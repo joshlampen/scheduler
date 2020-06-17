@@ -9,7 +9,7 @@ export default function useApplicationData() {
     days: [],
     appointments: {},
     interviewers: {},
-    appointmentsForDay: [],
+    appointmentsForDay: []
   });
 
   const setDay = day => dispatch({
@@ -19,11 +19,11 @@ export default function useApplicationData() {
 
   const bookInterview = (id, interview) => {
     return axios.put(`/api/appointments/${id}`, { interview })
-  }
+  };
 
   const cancelInterview = (id) => {
     return axios.delete(`/api/appointments/${id}`)
-  }
+  };
 
   useEffect(() => {
     Promise.all([
@@ -45,7 +45,7 @@ export default function useApplicationData() {
           appointmentsForDay
         }
       });
-    })
+    });
   }, []);
 
   useEffect(() => {

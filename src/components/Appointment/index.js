@@ -22,7 +22,7 @@ const ERROR_DELETE = "ERROR_DELETE";
 export default function Appointment(props) {
   const { mode, transition, back } = useVisualMode(
     props.interview ? SHOW : EMPTY
-  )
+  );
 
   useEffect(() => {
     if (props.interview && mode === EMPTY) {
@@ -37,22 +37,22 @@ export default function Appointment(props) {
     const interview = {
       student: name,
       interviewer
-    }
+    };
 
     transition(SAVING);
 
     props.bookInterview(props.id, interview)
       .then(() => transition(SHOW))
       .catch(() => transition(ERROR_SAVE, true));
-  }
+  };
 
   const edit = () => {
     transition(EDIT);
-  }
+  };
 
   const confirm = () => {
     transition(CONFIRM);
-  }
+  };
 
   const destroy = () => {
     transition(DELETING, true);
@@ -60,7 +60,7 @@ export default function Appointment(props) {
     props.cancelInterview(props.id)
       .then(() => transition(EMPTY))
       .catch(() => transition(ERROR_DELETE, true));
-  }
+  };
 
   return (
     <article className="appointment" data-testid="appointment">
