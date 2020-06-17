@@ -1,23 +1,26 @@
-# Interview Scheduler
+## Interview Scheduler
 
-## Setup
+Interview scheduler is a single-page web application where users can create, edit, and cancel interviews. It is built with React and leverages WebSockets to update the interface across all clients in real-time.
 
-Install dependencies with `npm install`.
+## Final Product
 
-## Running Webpack Development Server
+[See here for website](https://project-scheduler-react.herokuapp.com/)
 
-```sh
-npm start
-```
+## Dependencies
 
-## Running Jest Test Framework
+- Node 10.x or above
+- NPM 5.x or above
+- axios
+- classnames
+- express
+- normalize.css
+- react
+- react-dom
+- react-scripts
 
-```sh
-npm test
-```
+## Getting Started
 
-## Running Storybook Visual Testbed
-
-```sh
-npm run storybook
-```
+1. Fork this repository, then clone your fork of this repository.
+2. Install dependencies using the `npm install` command.
+3. Start the web server using the `npm run dev` command. The app will be served at <http://localhost:8000/>.
+4. Go to <http://localhost:8000/> in your browser.
