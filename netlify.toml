@@ -14,4 +14,3 @@
 [build.environment]
   REACT_APP_API_BASE_URL = "https://project-scheduler-api.herokuapp.com/"
   REACT_APP_WEBSOCKET_URL = "wss://project-scheduler-api.herokuapp.com/"
-  CI = "false"
