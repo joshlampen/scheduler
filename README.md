@@ -1,6 +1,10 @@
 ## Interview Scheduler
 
-Interview scheduler is a single-page web application where users can create, edit, and cancel interviews. It is built with React and leverages WebSockets to update the interface across all clients in real-time.
+Interview scheduler is a single-page web application where users can create, edit, and cancel interviews. It leverages WebSockets to update the interface across all clients in real-time.
+
+- Front End: React, Storybook, Sass
+- Back End: PostgreSQL, Node, Express
+- Test: Jest, Cypress
 
 ## Final Product
 
