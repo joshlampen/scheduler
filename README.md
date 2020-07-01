@@ -10,6 +10,12 @@ Interview scheduler is a single-page web application where users can create, edi
 
 [See here for website](https://project-scheduler-react.herokuapp.com/)
 
+## Getting Started
+
+1. Fork this repository, then clone your fork of this repository.
+2. Install dependencies using the `npm install` command.
+3. Start the web server using the `npm run dev` command. The app will be served at <http://localhost:8000/>.
+
 ## Dependencies
 
 - Node 10.x or above
@@ -21,10 +27,3 @@ Interview scheduler is a single-page web application where users can create, edi
 - react
 - react-dom
 - react-scripts
-
-## Getting Started
-
-1. Fork this repository, then clone your fork of this repository.
-2. Install dependencies using the `npm install` command.
-3. Start the web server using the `npm run dev` command. The app will be served at <http://localhost:8000/>.
-4. Go to <http://localhost:8000/> in your browser.
